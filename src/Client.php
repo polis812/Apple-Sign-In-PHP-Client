@@ -2,6 +2,7 @@
 
 namespace CurrencyFair\AppleId;
 
+use CurrencyFair\AppleId\Response\NotificationResponse;
 use CurrencyFair\AppleId\Response\AuthCodeVerifyResponse;
 use CurrencyFair\AppleId\Response\JwtVerifyResponse;
 use Exception;
@@ -49,6 +50,22 @@ class Client
     public function verifyAndDecodeJwt($jwtToken)
     {
         return new JwtVerifyResponse(
+            JWT::decode($jwtToken, $this->getApplePublicKey(), ['RS256'])
+        );
+    }
+
+    /**
+     * Verifies and decodes Apple JWTs and returns the decoded server-to-server notification
+     *
+     * @param string $jwtToken
+     *
+     * @return NotificationResponse
+     *
+     * @throws Exception
+     */
+    public function verifyAndDecodeJwtNotification($jwtToken)
+    {
+        return new NotificationResponse(
             JWT::decode($jwtToken, $this->getApplePublicKey(), ['RS256'])
         );
     }
