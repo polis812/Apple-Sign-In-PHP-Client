@@ -12,7 +12,7 @@ class NotificationResponse
     /** @var string */
     private $audience;
 
-    /** @var string */
+    /** @var int */
     private $issuedAt;
 
     /** @var string */
@@ -27,20 +27,20 @@ class NotificationResponse
     /** @var bool|null */
     private $isPrivateEmail;
 
-    /** @var string */
+    /** @var int|null */
     private $eventTime;
 
     public function __construct(stdClass $response)
     {
         $this->issuer = isset($response->iss) ? $response->iss : null;
         $this->audience = isset($response->aud) ? $response->aud : null;
-        $this->issuedAt = isset($response->iat) ? $response->iat : null;
+        $this->issuedAt = isset($response->iat) ? (int)$response->iat : null;
 
         $this->type = isset($response->events->type) ? $response->events->type : null;
         $this->subject = isset($response->events->sub) ? $response->events->sub : null;
         $this->email = isset($response->events->email) ? $response->events->email : null;
-        $this->isPrivateEmail = isset($response->events->is_private_email) ? $response->events->is_private_email : null;
-        $this->eventTime = isset($response->events->event_time) ? $response->events->event_time : null;
+        $this->isPrivateEmail = isset($response->events->is_private_email) ? $response->events->is_private_email : false;
+        $this->eventTime = isset($response->events->event_time) ? (int)$response->events->event_time : null;
     }
 
     /**
@@ -62,7 +62,7 @@ class NotificationResponse
     /**
      * @return string|null
      */
-    public function getIssuedAt(): ?string
+    public function getIssuedAt(): ?int
     {
         return $this->issuedAt;
     }
@@ -100,9 +100,9 @@ class NotificationResponse
     }
 
     /**
-     * @return string
+     * @return int|null
      */
-    public function getEventTime(): string
+    public function getEventTime(): ?int
     {
         return $this->eventTime;
     }
