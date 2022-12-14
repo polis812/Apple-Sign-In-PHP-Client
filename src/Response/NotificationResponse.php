@@ -36,11 +36,16 @@ class NotificationResponse
         $this->audience = isset($response->aud) ? $response->aud : null;
         $this->issuedAt = isset($response->iat) ? (int)$response->iat : null;
 
-        $this->type = isset($response->events->type) ? $response->events->type : null;
-        $this->subject = isset($response->events->sub) ? $response->events->sub : null;
-        $this->email = isset($response->events->email) ? $response->events->email : null;
-        $this->isPrivateEmail = isset($response->events->is_private_email) ? $response->events->is_private_email : false;
-        $this->eventTime = isset($response->events->event_time) ? (int)$response->events->event_time : null;
+        $events = $response->events;
+        if (is_scalar($events)) {
+            $events = json_decode($events);
+        }
+
+        $this->type = isset($events->type) ? $events->type : null;
+        $this->subject = isset($events->sub) ? $events->sub : null;
+        $this->email = isset($events->email) ? $events->email : null;
+        $this->isPrivateEmail = isset($events->is_private_email) ? $events->is_private_email : false;
+        $this->eventTime = isset($events->event_time) ? (int)$events->event_time : null;
     }
 
     /**

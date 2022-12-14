@@ -1,0 +1,7 @@
+{
+  "iss": "https://appleid.apple.com",
+  "aud": "com.mytest.app",
+  "iat": 1508184845,
+  "jti": "abede...67890",
+  "events": "{\"type\":\"consent-revoked\",\"sub\":\"820417.faa325acbc78e1be1668ba852d492d8a.0219\",\"event_time\":1671005998846}"
+}
