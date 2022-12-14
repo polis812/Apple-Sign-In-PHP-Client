@@ -13,6 +13,7 @@ use GuzzleHttp\RequestOptions;
 
 /**
  * Class Client
+ *
  * @package CurrencyFair\AppleId
  */
 class Client
@@ -28,7 +29,7 @@ class Client
 
     /**
      * @param ClientInterface $httpClient
-     * @param Config $config
+     * @param Config          $config
      */
     public function __construct(ClientInterface $httpClient, Config $config)
     {
@@ -40,6 +41,7 @@ class Client
      * Verifies and decodes Apple JWTs and returns the decoded token information
      *
      * @param string $jwtToken
+     *
      * @return JwtVerifyResponse
      *
      * @throws Exception
@@ -55,6 +57,7 @@ class Client
      * Verifies an Authorisation Code provided by Apple and returns token information
      *
      * @param string $authCode
+     *
      * @return AuthCodeVerifyResponse
      *
      * @throws Exception | RequestException
@@ -65,15 +68,15 @@ class Client
             $this->config->get(Config::API_TOKEN_ENDPOINT),
             [
                 RequestOptions::FORM_PARAMS => [
-                    'grant_type' => 'authorization_code',
-                    'code' => $authCode,
-                    'redirect_uri' => $this->config->get(Config::REDIRECT_URI),
-                    'client_id' => $this->config->get(Config::CLIENT_ID),
+                    'grant_type'    => 'authorization_code',
+                    'code'          => $authCode,
+                    'redirect_uri'  => $this->config->get(Config::REDIRECT_URI),
+                    'client_id'     => $this->config->get(Config::CLIENT_ID),
                     'client_secret' => $this->generateClientSecret(),
                 ],
-                RequestOptions::HEADERS => [
-                    'Accept' => 'application/json'
-                ]
+                RequestOptions::HEADERS     => [
+                    'Accept' => 'application/json',
+                ],
             ]
         );
 
@@ -93,9 +96,43 @@ class Client
     }
 
     /**
+     * Revoke access token provided by Apple
+     *
+     * @param string $accessToken
+     *
+     * @return bool
+     *
+     * @throws Exception | RequestException
+     */
+    public function revokeAccessToken($accessToken)
+    {
+        $response = $this->httpClient->post(
+            $this->config->get(Config::API_REVOKE_ENDPOINT),
+            [
+                RequestOptions::FORM_PARAMS => [
+                    'client_id'       => $this->config->get(Config::CLIENT_ID),
+                    'client_secret'   => $this->generateClientSecret(),
+                    'token'           => $accessToken,
+                    'token_type_hint' => 'access_token',
+                ],
+                RequestOptions::HEADERS     => [
+                    'Accept' => 'application/json',
+                ],
+            ]
+        );
+
+        if ($response->getStatusCode() !== self::HTTP_OK) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Returns a URL used to create a Sign-In with Apple Link
      *
      * @param string $state This will be POSTed back by to the redirect_uri.
+     *
      * @return string
      *
      * @throws Exception
@@ -103,15 +140,15 @@ class Client
     public function getAuthoriseUrl($state = '')
     {
         return $this->config->get(Config::API_AUTH_ENDPOINT) . '?' . http_build_query(
-            [
-                'response_type' => 'code id_token',
-                'response_mode' => 'form_post',
-                'client_id' => $this->config->get(Config::CLIENT_ID),
-                'redirect_uri' => $this->config->get(Config::REDIRECT_URI),
-                'state' => $state,
-                'scope' => $this->config->get(Config::DEFAULT_SCOPES),
-            ]
-        );
+                [
+                    'response_type' => 'code id_token',
+                    'response_mode' => 'form_post',
+                    'client_id'     => $this->config->get(Config::CLIENT_ID),
+                    'redirect_uri'  => $this->config->get(Config::REDIRECT_URI),
+                    'state'         => $state,
+                    'scope'         => $this->config->get(Config::DEFAULT_SCOPES),
+                ]
+            );
     }
 
     /**

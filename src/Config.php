@@ -16,6 +16,7 @@ class Config
     const API_KEYS_ENDPOINT = 'apiKeysEndpoint';
     const API_TOKEN_ENDPOINT = 'apiTokenEndpoint';
     const API_AUTH_ENDPOINT = 'apiAuthEndpoint';
+    const API_REVOKE_ENDPOINT = 'apiRevokeEndpoint';
 
     /** @var array */
     private static $allowedKeys = [
@@ -27,7 +28,8 @@ class Config
         self::DEFAULT_SCOPES,
         self::API_KEYS_ENDPOINT,
         self::API_TOKEN_ENDPOINT,
-        self::API_AUTH_ENDPOINT
+        self::API_AUTH_ENDPOINT,
+        self::API_REVOKE_ENDPOINT
     ];
 
     /** @var array */
@@ -36,6 +38,7 @@ class Config
         self::API_KEYS_ENDPOINT => 'https://appleid.apple.com/auth/keys',
         self::API_TOKEN_ENDPOINT => 'https://appleid.apple.com/auth/token',
         self::API_AUTH_ENDPOINT => 'https://appleid.apple.com/auth/authorize',
+        self::API_REVOKE_ENDPOINT => 'https://appleid.apple.com/auth/revoke',
     ];
 
     public function __construct(array $config)
